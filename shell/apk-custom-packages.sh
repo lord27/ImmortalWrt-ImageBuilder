@@ -7,7 +7,7 @@
 # 首页和网络向导(注意此插件依赖于istore商店 若集成它 则连同集成了istore商店)
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-quickstart-zh-cn"
 # 新增Run安装器 用于快速安装makeself打包的run文件 目前和quickfile的nginx配置冲突 请勿同时集成quickfile
-#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-run"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-run"
 # 新增非常好用的文件管理器 by github sbwml
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES bash quickfile luci-app-quickfile luci-i18n-quickfile-zh-cn"
 # 极光主题和配置 by github eamonxg
@@ -19,7 +19,7 @@
 # 新增ssrp apk
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES kmod-nft-tproxy kmod-nft-socket xray-core naiveproxy luci-app-ssr-plus luci-i18n-ssr-plus-zh-cn"
 # 新增passwall2 apk
-#CUSTOM_PACKAGES="$CUSTOM_PACKAGES geoview xray-core sing-box hysteria kmod-nft-socket kmod-nft-tproxy luci-app-passwall2 luci-i18n-passwall2-zh-cn"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES geoview xray-core sing-box hysteria kmod-nft-socket kmod-nft-tproxy luci-app-passwall2 luci-i18n-passwall2-zh-cn"
 # IPTV 流媒体转发服务器 - rtp2httpd by stackia
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-rtp2httpd luci-i18n-rtp2httpd-zh-cn"
 # 新增 clashoo by kenzok8 注意若集成clashoo 则不能集成nikki 目前它们俩配置冲突
@@ -40,7 +40,7 @@
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-dae-zh-cn"
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-homeproxy-zh-cn"
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES geoview xray-core sing-box hysteria luci-i18n-passwall-zh-cn"
-#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-openclash luci-compat kmod-tun kmod-inet-diag kmod-nft-tproxy bash curl ip-full unzip"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-openclash luci-compat kmod-tun kmod-inet-diag kmod-nft-tproxy bash curl ip-full unzip"
 # VPN
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-proto-wireguard"
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-tailscale-community luci-i18n-tailscale-community-zh-cn"
@@ -63,7 +63,7 @@
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-timewol-zh-cn"
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-wol-zh-cn"
 # 自定义命令
-#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-commands-zh-cn"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-commands-zh-cn"
 
 #===========================以下imm仓库内的软件==============================↓
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-3cat-zh-cn"
@@ -189,3 +189,45 @@
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-wifischedule-zh-cn"
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-xinetd-zh-cn"
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-xlnetacc-zh-cn"
+
+# =================== sirpdboy 系列插件 ===================
+# 以下插件均来自 https://github.com/sirpdboy
+# Watch Dog 看门狗 https://github.com/sirpdboy/luci-app-watchdog
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-watchdog luci-i18n-watchdog-zh-cn"
+# 网速测试 https://github.com/sirpdboy/luci-app-netspeedtest
+# 依赖 speedtest-cli（外网测速内核）；内网 iperf3 吞吐测速需另装 iperf3（可选）
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-netspeedtest luci-i18n-netspeedtest-zh-cn speedtest-cli"
+# 任务计划 https://github.com/sirpdboy/luci-app-taskplan （已存在于上方，此处不再重复）
+# 关闭设备电源 https://github.com/sirpdboy/luci-app-poweroffdevice
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-poweroffdevice luci-i18n-poweroffdevice-zh-cn"
+# OpentoPD 主题 https://github.com/sirpdboy/luci-theme-opentopd
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-theme-opentopd"
+# Ku Cat 主题 https://github.com/sirpdboy/luci-theme-kucat
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-theme-kucat"
+# Ku Cat 主题配置 https://github.com/sirpdboy/luci-app-kucat-config
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-kucat-config luci-i18n-kucat-config-zh-cn"
+# NFT 时间控制 https://github.com/sirpdboy/luci-app-timecontrol
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-timecontrol luci-i18n-timecontrol-zh-cn"
+# 家长控制 https://github.com/sirpdboy/luci-theme-parentcontrol
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-theme-parentcontrol"
+# Eqos Plus 限速 https://github.com/sirpdboy/luci-app-eqosplus
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-eqosplus luci-i18n-eqosplus-zh-cn"
+# 高级设置 https://github.com/sirpdboy/luci-app-advanced
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-advanced luci-i18n-advanced-zh-cn"
+# ddns-go (sirpdboy 版) https://github.com/sirpdboy/luci-app-ddns-go
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-ddns-go luci-i18n-ddns-go-zh-cn"
+# Advanced Plus 高级增强 https://github.com/sirpdboy/luci-app-advancedplus
+# 注意：启用时需排除冲突项 luci-app-argon-config 和 luci-i18n-argon-config-zh-cn（参考 issue #521）
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-advancedplus luci-i18n-advancedplus-zh-cn -luci-app-argon-config -luci-i18n-argon-config-zh-cn"
+# Net Wizard 网络向导 https://github.com/sirpdboy/luci-app-netwizard
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-netwizard luci-i18n-netwizard-zh-cn"
+# Partexp 分区扩容 https://github.com/sirpdboy/luci-app-partexp （已存在于上方，此处不再重复）
+# 卢克西 Lucky https://github.com/sirpdboy/luci-app-lukcy
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-lukcy luci-i18n-lukcy-zh-cn"
+
+# =================== 去广告 / DNS 过滤 ===================
+# AdGuardHome 本地 DNS 去广告解决方案
+# 核心程序 adguardhome 来自 imm 仓库内；界面包来自社区维护
+# 推荐使用 kenzok78 维护版本，适配 ImmortalWrt 24.10 / 25.12
+# https://github.com/kenzok78/luci-app-adguardhome
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES adguardhome luci-app-adguardhome luci-i18n-adguardhome-zh-cn"

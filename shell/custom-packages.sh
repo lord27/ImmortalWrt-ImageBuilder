@@ -16,8 +16,11 @@
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-uninstall"
 # 极光主题 by github eamonxg
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-theme-aurora luci-app-aurora-config luci-i18n-aurora-config-zh-cn"
-# 去广告adghome
-#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-adguardhome"
+# 去广告 AdGuardHome 本地 DNS 去广告解决方案
+# 核心程序 adguardhome 来自 imm 仓库内；界面包来自社区维护
+# 推荐使用 kenzok78 维护版本，适配 ImmortalWrt 24.10 / 25.12
+# https://github.com/kenzok78/luci-app-adguardhome
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES adguardhome luci-app-adguardhome luci-i18n-adguardhome-zh-cn"
 # 代理相关
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-openvpn-server luci-i18n-openvpn-server-zh-cn"
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-openvpn-zh-cn"
@@ -213,3 +216,34 @@
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-xinetd-zh-cn"
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-xlnetacc-zh-cn"
 #CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-i18n-zerotier-zh-cn"
+
+# =================== sirpdboy 系列插件 ===================
+# 以下插件均来自 https://github.com/sirpdboy
+# Watch Dog 看门狗 https://github.com/sirpdboy/luci-app-watchdog （已存在于上方，此处不再重复）
+# 网速测试 https://github.com/sirpdboy/luci-app-netspeedtest
+# 依赖 speedtest-cli（外网测速内核）；内网 iperf3 吞吐测速需另装 iperf3（可选）
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-netspeedtest luci-i18n-netspeedtest-zh-cn speedtest-cli"
+# 任务计划 https://github.com/sirpdboy/luci-app-taskplan （已存在于上方，此处不再重复）
+# 关闭设备电源 https://github.com/sirpdboy/luci-app-poweroffdevice
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-poweroffdevice luci-i18n-poweroffdevice-zh-cn"
+# OpentoPD 主题 https://github.com/sirpdboy/luci-theme-opentopd
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-theme-opentopd"
+# Ku Cat 主题 https://github.com/sirpdboy/luci-theme-kucat （已存在于上方，此处不再重复）
+# Ku Cat 主题配置 https://github.com/sirpdboy/luci-app-kucat-config
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-kucat-config luci-i18n-kucat-config-zh-cn"
+# NFT 时间控制 https://github.com/sirpdboy/luci-app-timecontrol
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-timecontrol luci-i18n-timecontrol-zh-cn"
+# 家长控制 https://github.com/sirpdboy/luci-theme-parentcontrol
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-theme-parentcontrol"
+# Eqos Plus 限速 https://github.com/sirpdboy/luci-app-eqosplus
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-eqosplus luci-i18n-eqosplus-zh-cn"
+# 高级设置 https://github.com/sirpdboy/luci-app-advanced
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-advanced luci-i18n-advanced-zh-cn"
+# ddns-go (sirpdboy 版) https://github.com/sirpdboy/luci-app-ddns-go
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-ddns-go luci-i18n-ddns-go-zh-cn"
+# Advanced Plus 高级增强 https://github.com/sirpdboy/luci-app-advancedplus （已存在于上方，此处不再重复）
+# Net Wizard 网络向导 https://github.com/sirpdboy/luci-app-netwizard
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-netwizard luci-i18n-netwizard-zh-cn"
+# Partexp 分区扩容 https://github.com/sirpdboy/luci-app-partexp （已存在于上方，此处不再重复）
+# 卢克西 Lucky https://github.com/sirpdboy/luci-app-lukcy
+#CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-lukcy luci-i18n-lukcy-zh-cn"
