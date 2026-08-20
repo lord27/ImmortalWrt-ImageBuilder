@@ -1,0 +1,186 @@
+name: Build OpenWrt 25.12.5 x86-64 (with ImmortalWrt packages)
+
+# ====================================================================
+# 此工作流使用 OpenWrt 官方 25.12.5 ImageBuilder 构建固件
+# 并通过注入 ImmortalWrt 25.12.1 软件源，使用本项目的插件列表
+# 背景：ImmortalWrt 暂未发布 25.12.5，但 OpenWrt 官方已发布
+#       因此用 OpenWrt 25.12.5 作为基础系统，追加 ImmortalWrt 25.12.1 软件源
+#       以获取 passwall/rclone/sirpdboy 等 ImmortalWrt 特有插件
+# ====================================================================
+
+on:
+  workflow_dispatch:
+    inputs:
+      custom_router_ip:
+        description: "请设置路由器的管理地址(仅对多网口路由器有效) 格式:192.168.x.1 或 10.x.x.1"
+        required: true
+        default: "192.168.20.17"
+      profile:
+        description: '选择软件包空间大小'
+        required: true
+        type: choice
+        default: '2G'
+        options:
+          - '1G'
+          - '2G'
+          - '3G'
+          - '4G'
+      enable_store:
+        description: "集成 store 商店"
+        required: false
+        type: boolean
+        default: true
+      include_docker:
+        description: |
+          是否编译 Docker 插件
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - 'yes'
+          - 'no'
+      enable_pppoe:
+        description: "是否配置PPPoE拨号信息?"
+        required: true
+        default: 'no'
+        type: choice
+        options:
+        - 'yes'
+        - 'no'
+      pppoe_account:
+        description: "宽带账号 (若启用PPPoE)"
+        required: false
+      pppoe_password:
+        description: "宽带密码 (若启用PPPoE)"
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq zstd wget git make python3
+
+      - name: Set executable permissions
+        run: chmod +x ${{ github.workspace }}/x86-64/build-openwrt25.sh
+
+      - name: Save Custom Router IP into OpenWrt files
+        run: |
+          mkdir -p "${{ github.workspace }}/custom"
+          echo "${{ github.event.inputs.custom_router_ip }}" > "${{ github.workspace }}/custom/custom_router_ip.txt"
+          echo "您设置的路由器管理地址是:${{ github.event.inputs.custom_router_ip }}"
+
+      - name: Validate PPPoE Inputs
+        run: |
+          if [[ "${{ inputs.enable_pppoe }}" == "yes" ]]; then
+            if [[ -z "${{ inputs.pppoe_account }}" || -z "${{ inputs.pppoe_password }}" ]]; then
+              echo "Error: PPPoE account and password must be provided when PPPoE is enabled!"
+              exit 1
+            fi
+          fi
+
+      - name: Enable Store integration
+        run: |
+          if [ "${{ github.event.inputs.enable_store }}" == "true" ]; then
+            echo 'CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-store"' >> shell/apk-custom-packages.sh
+            echo "✅ 已追加 luci-app-store"
+          else
+            echo "❎ 未启用 luci-app-store"
+          fi
+
+      - name: Build OpenWrt 25.12.5 x86-64 (with ImmortalWrt packages)
+        run: |
+          profile="${{ github.event.inputs.profile }}"
+          case "$profile" in
+            1G)
+              ROOTFS_SIZE=1024
+              ;;
+            2G)
+              ROOTFS_SIZE=2048
+              ;;
+            3G)
+              ROOTFS_SIZE=3072
+              ;;
+            4G)
+              ROOTFS_SIZE=4096
+              ;;
+          esac
+          echo "ROOTFS_SIZE=$ROOTFS_SIZE"
+          include_docker="${{ github.event.inputs.include_docker }}"
+
+          OPENWRT_VERSION="25.12.5"
+          IB_DIR="openwrt-imagebuilder-${OPENWRT_VERSION}-x86-64.Linux-x86_64"
+          IB_URL="https://downloads.openwrt.org/releases/${OPENWRT_VERSION}/targets/x86/64/${IB_DIR}.tar.zst"
+
+          echo "📥 下载 OpenWrt ${OPENWRT_VERSION} ImageBuilder..."
+          wget -q "${IB_URL}"
+
+          echo "📦 解压 ImageBuilder..."
+          tar --zstd -xf "${IB_DIR}.tar.zst"
+
+          cd "${IB_DIR}"
+
+          # 复制项目文件到 ImageBuilder 目录
+          cp -r ${{ github.workspace }}/shell ./shell
+          cp -r ${{ github.workspace }}/files ./files
+
+          # 将 custom_router_ip.txt 放到 files/etc/config/ 供 99-custom.sh 读取
+          mkdir -p files/etc/config
+          cp ${{ github.workspace }}/custom/custom_router_ip.txt files/etc/config/ 2>/dev/null || true
+
+          echo "========================================"
+          echo "🏗️ 开始构建 OpenWrt ${OPENWRT_VERSION} + ImmortalWrt 25.12.1 packages"
+          echo "========================================"
+
+          # 运行构建脚本（注入 ImmortalWrt 源 + 包列表 + make image）
+          PROFILE=$ROOTFS_SIZE \
+          INCLUDE_DOCKER=$include_docker \
+          ENABLE_PPPOE=${{ inputs.enable_pppoe }} \
+          PPPOE_ACCOUNT="${{ inputs.pppoe_account }}" \
+          PPPOE_PASSWORD="${{ inputs.pppoe_password }}" \
+          bash ${{ github.workspace }}/x86-64/build-openwrt25.sh
+
+          # 复制构建产物到 workspace/bin
+          mkdir -p ${{ github.workspace }}/bin/targets/x86/64/
+          cp -r bin/targets/x86/64/* ${{ github.workspace }}/bin/targets/x86/64/ || true
+          echo "✅ 构建产物:"
+          ls -lah ${{ github.workspace }}/bin/targets/x86/64/
+
+      - name: Create info
+        run: |
+          cat > ${{ github.workspace }}/router-info.md <<EOF
+          ## 📡 路由器后台信息
+
+          - 🏠 **后台地址**: ${{ github.event.inputs.custom_router_ip }}
+          - 👤 **用户名**: root
+          - 🔑 **密码**: 无
+          - 📦 **基础系统**: OpenWrt 25.12.5 (官方)
+          - 🔌 **插件源**: ImmortalWrt 25.12.1 (passwall/rclone/sirpdboy 等)
+          EOF
+
+          if [ "${{ github.event.inputs.include_docker }}" == "yes" ]; then
+            extra_content="#### 默认带docker"
+            echo -e "\n$extra_content" >> ${{ github.workspace }}/router-info.md
+          else
+            echo -e "\n#### 不带docker" >> ${{ github.workspace }}/router-info.md
+          fi
+
+      - name: Upload OpenWrt as release assets
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: Autobuild-openwrt-25.12.5-x86-64
+          body_path: ${{ github.workspace }}/router-info.md
+          files: |
+            ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.img.gz
+          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
